@@ -1,0 +1,74 @@
+<ion-view view-title="Sgin" name="Sgin-view">
+  <ion-content class="padding">
+      <div class="list list-inset">
+          <div class="item item-input item-select">
+              <span class="input-label">用户名称</span>
+              <input type="text" placeholder="Username" ng-model="user.username">
+              <span class="input-label">用户类型</span>
+              <select ng-model="user.authType">
+                  <option selected>普通用户</option>
+                  <option>管理员用户</option>
+              </select>
+          </div>
+          <div class="item item-input">
+              <span class="input-label">请输入密码</span>
+              <input type="password" placeholder="Password" ng-model="user.password">
+          </div>  
+          <div class="item item-input">
+              <span class="input-label">再次输入密码</span>
+              <input type="password" placeholder="Confirm Password" ng-model="user.confirmPassword">
+          </div>
+      </div>    
+      <div class="list list-inset">    
+          <div class="item item-input item-select">
+              <span class="input-label">员工姓名</span>
+              <input type="text" placeholder="Name" ng-model="employee.name">
+              <span class="input-label">性别</span>    
+              <select ng-model="employee.sex">
+                  <option selected>男</option>
+                  <option>女</option>
+              </select>
+          </div>
+          
+          <div class="item item-input">
+              <span class="input-label">出生日期</span>
+              <input type="text" placeholder="birthday" ion-datetime-picker ng-model="datetimeValue">
+                {{datetimeValue| date: "yyyy-MM-dd H:mm:ss"}}
+              </input>
+              <span class="input-label">年龄</span>
+              <input type="text" placeholder="Age" ng-model="employee.age">
+          </div>
+          
+          <div class="item item-input">
+              <span class="input-label">联系电话</span>
+              <input type="text" placeholder="Tel" ng-model="employee.tel">
+              <span class="input-label">省份证号</span>
+              <input type="text" placeholder="ID" ng-model="employee.ID">
+          </div>
+          <!-- Select the store the employ belong -->
+          <div class="item item-input-inset item-select-inset">
+              <span class="input-label">选择门店</span>
+              
+              <select ng-model="storeLocate.provience">
+                  <option selected>上海</option>
+                  <option>北京</option>
+              </select>
+              <span class="input-label padding">省</span>
+              
+              <select ng-model="storeLocate.city">
+                  <option selected>上海</option>
+                  <option>北京</option>
+              </select>
+              <span class="input-label padding">市</span>
+              <select ng-model="storeLocate.name">
+                  <option selected>徐汇店</option>
+                  <option>松江店</option>
+              </select>
+              <span class="input-label padding">门店</span>
+          </div>
+      </div>
+      <button class="button button-block button-calm" ng-click="confirm()">确认</button>
+      <button class="button button-block button-calm" ng-click="clear()">清除</button>
+      
+  </ion-content>
+</ion-view>

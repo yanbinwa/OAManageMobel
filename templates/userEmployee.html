@@ -1,0 +1,30 @@
+<ion-view view-title="用户">
+  <ion-content class="padding">
+      <div class="list list-inset">
+          <div class="item">
+              <span class="input-label">用户名称</span>
+              <span class="input-label">{{userInfo.user.name}}</span>
+              <span class="input-label">用户类型</span>
+              <span class="input-label">{{showAuthType(userInfo.user.authType)}}</span>
+          </div>
+          <button class="button button-block button-calm" ng-click="changePassword()">修改密码</button>
+          
+          <div class="item">
+              <span class="input-label">员工姓名</span>
+              <span class="input-label">{{userInfo.employee.name}}</span>
+              <span class="input-label">用户性别</span>
+              <span class="input-label">{{userInfo.employee.sex}}</span>
+              <span class="input-label">出生日期</span>
+              <span class="input-label">{{showEmployeeBirthday(userInfo.employee.birthday)}}</span>
+              <span class="input-label">年龄</span>
+              <span class="input-label">{{userInfo.employee.age}}</span>
+              <span class="input-label">联系电话</span>
+              <span class="input-label">{{userInfo.employee.tel}}</span>
+              <span class="input-label">身份证号</span>
+              <span class="input-label">{{userInfo.employee.identityId}}</span>
+          </div>
+          <button class="button button-block button-calm" ng-click="logout()">退出登录</button>
+          
+      </div>
+  </ion-content>
+</ion-view>

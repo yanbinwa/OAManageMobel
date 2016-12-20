@@ -1,0 +1,19 @@
+<ion-view view-title="Login" name="login-view">
+  <ion-content class="padding">
+      <div class="list list-inset">
+          <div class="item item-input item-select">
+              <input type="text" placeholder="Username" ng-model="user.username">
+              <span class="input-label">用户类型</span>
+              <select ng-model="user.auth">
+              <option selected>普通用户</option>
+              <option>管理员用户</option>
+          </select>
+          </div>
+          <label class="item item-input">
+              <input type="password" placeholder="Password" ng-model="user.password">
+          </label>
+      </div>
+      <button class="button button-block button-calm" ng-click="login()">Login</button>
+      <button class="button button-block button-calm" ng-click="sign()">Sign</button>
+  </ion-content>
+</ion-view>

@@ -1,6 +1,6 @@
 angular.module('ionicApp.controllers')
 
-.controller('MainCtrl', function($scope, $state, $rootScope, $ionicSideMenuDelegate, $timeout, $ionicModal, WebsocketClient, StoreInfo, Notification, UserInfo) {
+.controller('MainCtrl', function($scope, $state, $rootScope, $ionicSideMenuDelegate, $timeout, $ionicModal, WebsocketClient, Notification, UserInfo, URL, DateUtil) {
 
     $scope.$watch('$viewContentLoaded', function(event) {
 
@@ -43,18 +43,6 @@ angular.module('ionicApp.controllers')
 		}
 	})
 	
-	$scope.openChildrenTab = function(index) {
-		var responseMsg = {
-			routeKey : null,
-			functionKey : 'openTab'
-		};
-				
-		if (index == 1) {
-			responseMsg.routeKey = 'CheckinTabCtrl';
-		} 
-		$scope.$broadcast(responseMsg.routeKey, responseMsg);
-	}
-	
   	var sendMsg = function(msg) {
   		msg.routeKey = 'MainCtrl';
   		$scope.$emit("MainCtrl", msg);
@@ -80,6 +68,9 @@ angular.module('ionicApp.controllers')
 			}
 			else if(functionKey == 'getSessionId') {
 				getSessionIdResponse(msg);
+			}
+			else if(functionKey == 'handleVerifyNotify') {
+				handleVerifyNotifyResponse(msg);
 			}
 		}
 	}
@@ -127,11 +118,12 @@ angular.module('ionicApp.controllers')
 		var responseCode = msg.responseCode;
 		var stateAuth = false;
   		if (responseCode != WebsocketClient.getResponseOk()) {
+  			alert("getSessionIdResponse failed");
   			return;
   		}
   		var sessionId = msg.responsePayLoad;
   		if (sessionId == WebsocketClient.getSessionId()) {
-  			StoreInfo.loadStoreInfo(WebsocketClient.getStorageKey());
+  			// this is the refresh operation, need to reload the info from local storage
   			UserInfo.loadUserInfo(WebsocketClient.getStorageKey());
   			stateAuth = true;
   		}
@@ -176,6 +168,197 @@ angular.module('ionicApp.controllers')
 	/* ---------------------------------------------- */
 	
 	
+	/* --------- Handle Notification ---------- */
+
+	$scope.checkBoxContext = {};
+	$scope.checkBoxContext.isSelected = false;
+	$scope.currentNotification = null;
+	
+  	var getNotifyMessageResponse = function(msg) {
+  		var responseCode = msg.responseCode;
+  		if (responseCode != WebsocketClient.getResponseOk()) {
+  			return;
+  		}
+  		var payLoad = msg.responsePayLoad;
+  		if (payLoad.type == "UserSignVerify") {
+  			handleUserSignVerifyNotification(payLoad);
+  		}
+  	}
+  	
+  	var handleUserSignVerifyNotification = function(payLoad) {
+  		var notification = payLoad;
+  		Notification.addNotification(payLoad);
+  		$scope.infoNum = Notification.getNotificationsSize();
+  		$rootScope.$digest();
+  	}
+  	
+  	var getSelectedNotify = function() {
+  		var notifications = [];
+  		if ($scope.checkBoxContext.isSelected) {
+  			notifications = Notification.getNotifications();
+  		}
+  		else {
+  			for(var i = 0; i < $scope.notifications.length; i ++) {
+  				if($scope.notifications[i].isSelected == true) {
+  					notifications.push($scope.notifications[i]);
+  				}
+  			}
+  		}
+  		return notifications;
+  	}
+  	
+  	$scope.selectedAllNotify = function() {
+  		for(var i = 0; i < $scope.notifications.length; i ++) {
+			$scope.notifications[i].isSelected = $scope.checkBoxContext.isSelected;
+		}
+  	}
+  	
+  	$scope.confirmSelectedNotify = function() {
+  		var notifications = getSelectedNotify();
+  		if (notifications.length == 0) {
+  			alert("当前没有信息被选中");
+  			return;
+  		}
+  		handleVerifyNotify(notifications);
+  		for(var i = 0; i < notifications.length; i++) {
+  			removeNotification(notifications[i]);
+  		}
+  	}
+  	
+  	$scope.clearSelectedNotify = function() {
+  		var notifications = getSelectedNotify();
+  		for(var i = 0; i < notifications.length; i++) {
+  			removeNotification(notifications[i]);
+  		}
+  	}
+  	
+  	$scope.getNotifyTitle = function(notification) {
+  		if (Notification.isEmployeeSignNotify(notification)) {
+  			return "员工申请认证";
+  		}
+  		else if(Notification.isStoreSignNotify(notification)) {
+  			return "门店申请认证";
+  		}
+  	}
+  	
+  	$ionicModal.fromTemplateUrl('templates/employeeSignVerify.html', function(modal) {
+  	    $scope.employeeSignVerifyModal = modal;
+  	}, {
+  	    scope: $scope,
+  	    animation: 'slide-in-up'
+  	});
+  	
+  	$ionicModal.fromTemplateUrl('templates/storeSignVerify.html', function(modal) {
+  	    $scope.storeSignVerifyModal = modal;
+  	}, {
+  	    scope: $scope,
+  	    animation: 'slide-in-up'
+  	});
+  	
+  	$scope.verifyNotify = function(notification) {
+  		$scope.notification = notification;
+  		openVerifyNotify(notification);
+  	}
+  	
+  	$scope.cancelVerifyNotify = function(notification) {
+  		closeVerifyNotify(notification);
+  	}
+  	
+  	$scope.confirmVerifyNotify = function(notification) {
+  		var notifications = [];
+  		notifications.push(notification);
+  		handleVerifyNotify(notifications);
+  		$scope.currentNotification = notification;
+  	}
+  	
+  	var openVerifyNotify = function(notification) {
+  		if (Notification.isEmployeeSignNotify(notification)) {
+  			$scope.employeeSignVerifyModal.show();
+  		}
+  		else if(Notification.isStoreSignNotify(notification)) {
+  			$scope.storeSignVerifyModal.show();
+  		}
+  	}
+  	
+  	var closeVerifyNotify = function(notification) {
+  		if (Notification.isEmployeeSignNotify(notification)) {
+  			$scope.employeeSignVerifyModal.hide();
+  		}
+  		else if(Notification.isStoreSignNotify(notification)) {
+  			$scope.storeSignVerifyModal.hide();
+  		}
+  	}
+  	
+  	var removeNotification = function(notification) {
+  		Notification.removeNotification(notification);
+  		$scope.infoNum = Notification.getNotificationsSize();
+  		$rootScope.$digest();
+  	}
+  	
+  	var handleVerifyNotify = function(notifications) {
+  		var users = [];
+  		for(var i = 0; i < notifications.length; i ++) {
+  			users.push(notifications[i].user);
+  		}
+  		var data = {
+			functionKey: 'handleVerifyNotify',
+			urlName: 'VerifyUserSign',
+			payLoad: JSON.stringify(users),
+			urlParameter: null
+		}
+		sendMsg(data);
+  	}
+  	
+  	var handleVerifyNotifyResponse = function(msg) {
+  		var responseCode = msg.responseCode;
+  		if (responseCode != WebsocketClient.getResponseOk()) {
+  			alert("认证用户时出现错误");
+  		}
+  		else {
+  			alert("认证用户时出现成功");
+  			if ($scope.currentNotification != null) {
+  				removeNotification($scope.currentNotification);
+  				closeVerifyNotify($scope.currentNotification);
+  				$scope.currentNotification = null;
+  			}
+  		}
+  	}
+  	
+  	/* ---------------------------------------------- */
+
+  	/* --------- User ---------- */
+  	
+  	$scope.showUserType = function(userType) {
+  		if (userType == "Employee") {
+  			return "员工用户";
+  		}
+  		else if(userType == "Store") {
+  			return "门店用户";
+  		}
+  		return null;
+  	}
+  	
+  	$scope.showAuthType = function(authType) {
+		if (authType == "Normal") {
+			return "普通用户";
+		}
+		else if(authType == "Admin") {
+			return "管理员用户";
+		}
+		return null;
+	}
+  	
+  	/* ---------------------------------------------- */
+  	
+  	
+    /* --------- Employee ---------- */
+  	
+  	$scope.showEmployeeBirthday = function(birthday) {
+		return DateUtil.getDateStrFromTimestamp(birthday);
+	}
+  	
+  	/* ---------------------------------------------- */
+  	
   	
   	/* --------- Other ---------- */
   	
@@ -198,6 +381,10 @@ angular.module('ionicApp.controllers')
   	
   	$scope.isNormalUser = function() {
   		return UserInfo.isNormalUser();
+  	}
+  	
+  	$scope.getUserTabHref = function() {
+  		return URL.getUserTabHref();
   	}
   	
   	/* ---------------------------------------------- */

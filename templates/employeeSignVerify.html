@@ -1,0 +1,45 @@
+<div class="modal">
+
+    <ion-header-bar class="bar-secondary">
+        <h1 class="title">用户申请</h1>
+        <button class="button button-clear button-positive" ng-click="cancelVerifyNotify(notification)">取消</button>
+    </ion-header-bar>
+
+    <ion-content>
+      <div class="list list-inset">
+          <div class="item item-input">
+              <span class="input-label">用户名称</span>
+              <input type="text" readOnly="true" value="{{notification.user.name}}" >
+              <span class="input-label">用户类型</span>
+              <input type="text" readOnly="true" value="{{showUserType(notification.user.userType)}}">
+          </div>
+          <div class="item item-input">
+              <span class="input-label">用户权限</span>
+                <input type="text" readOnly="true" value="{{showAuthType(notification.user.authType)}}">
+            </div>
+      </div>    
+      <div class="list list-inset">    
+          <div class="item item-input">
+              <span class="input-label">员工姓名</span>
+              <input type="text" readOnly="true" value="{{notification.userObject.name}}">
+              <span class="input-label">性别</span>    
+              <input type="text" readOnly="true" value="{{notification.userObject.sex}}">
+          </div>
+            
+          <div class="item item-input">
+              <span class="input-label">出生日期</span>
+              <input type="text" readOnly="true" value="{{showEmployeeBirthday(notification.userObject.brithday)}}">
+              <span class="input-label">年龄</span>
+              <input type="text" readOnly="true" value="{{notification.userObject.age}}">
+          </div>
+            
+          <div class="item item-input">
+              <span class="input-label">联系电话</span>
+              <input type="text" readOnly="true" value="{{notification.userObject.tel}}">
+              <span class="input-label">省份证号</span>
+              <input type="text" readOnly="true" value="{{notification.userObject.identityId}}">
+          </div>
+      </div>
+      <button class="button button-block button-calm" ng-click="confirmVerifyNotify(notification)">确认</button>
+    <ion-content>
+</div>

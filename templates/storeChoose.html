@@ -1,0 +1,26 @@
+<div class="modal">
+    <ion-header-bar class="bar-secondary">
+    	<button class="button button-clear button-positive" ng-click="confirmStoreChoose()">确认</button>
+        <h1 class="title">选择门店</h1>
+        <button class="button button-clear button-positive" ng-click="cancelStoreChoose()">取消</button>
+    </ion-header-bar>
+
+    <ion-content>
+	    <div class="item item-input item-select">
+	        <span class="input-label">省</span>
+            <select ng-model="location.province" ng-options="province.name for province in provinces" ng-change="selectProvince()"></select>
+	    </div>   
+	    <div class="item item-input item-select">
+	        <span class="input-label">市</span>
+            <select ng-model="location.city" ng-options="city.name for city in citys" ng-change="selectCity()"></select>
+	    </div> 
+	    <div class="item item-input item-select">
+	        <span class="input-label">区</span>
+            <select ng-model="location.area" ng-options="area.name for area in areas" ng-change="selectArea()"></select>
+	    </div> 
+	    <div class="item item-input item-select">
+	        <span class="input-label">门店</span>
+            <select ng-model="location.store" ng-options="store.name for store in stores" ng-change="selectStore()"></select>
+	    </div>  
+    <ion-content>
+</div>

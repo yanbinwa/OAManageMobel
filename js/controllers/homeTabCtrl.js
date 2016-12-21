@@ -1,6 +1,6 @@
 angular.module('ionicApp.controllers')
 
-.controller('HomeTabCtrl', function($scope, $state, UserInfo) {
+.controller('HomeTabCtrl', function($scope, $rootScope, $state, UserInfo, URL) {
 	$scope.$watch('$viewContentLoaded', function(event) {
 
 	})
@@ -15,7 +15,7 @@ angular.module('ionicApp.controllers')
 	var onSessionConnectedResponse = function(msg) {
 		var stateAuth = msg.stateAuth;
 		if (!stateAuth) {
-			$state.go('login');
+			$state.go(URL.getLoginStateName());
 		}
 	}
 	

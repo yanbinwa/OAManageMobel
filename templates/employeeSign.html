@@ -1,4 +1,4 @@
-<ion-view view-title="Sgin" name="Sgin-view">
+<ion-view view-title="Sign" name="Sgin-view">
   <ion-content class="padding">
       <div class="list list-inset">
           <div class="item item-input item-select">
@@ -28,43 +28,23 @@
                   <option selected>男</option>
                   <option>女</option>
               </select>
-          </div>
-          
+          </div>          
           <div class="item item-input">
               <span class="input-label">出生日期</span>
-              <input type="text" placeholder="birthday" ion-datetime-picker ng-model="datetimeValue">
-                {{datetimeValue| date: "yyyy-MM-dd H:mm:ss"}}
-              </input>
-              <span class="input-label">年龄</span>
-              <input type="text" placeholder="Age" ng-model="employee.age">
-          </div>
-          
+              <input type="text" autocorrect="off" placeholder="1989/12/21" ng-model="employee.birthdayStr" ng-click="openDatePicker()">
+          </div>          
           <div class="item item-input">
               <span class="input-label">联系电话</span>
               <input type="text" placeholder="Tel" ng-model="employee.tel">
+          </div>
+          <div class="item item-input">
               <span class="input-label">省份证号</span>
               <input type="text" placeholder="ID" ng-model="employee.ID">
           </div>
           <!-- Select the store the employ belong -->
-          <div class="item item-input-inset item-select-inset">
+          <div class="item item-input">
               <span class="input-label">选择门店</span>
-              
-              <select ng-model="storeLocate.provience">
-                  <option selected>上海</option>
-                  <option>北京</option>
-              </select>
-              <span class="input-label padding">省</span>
-              
-              <select ng-model="storeLocate.city">
-                  <option selected>上海</option>
-                  <option>北京</option>
-              </select>
-              <span class="input-label padding">市</span>
-              <select ng-model="storeLocate.name">
-                  <option selected>徐汇店</option>
-                  <option>松江店</option>
-              </select>
-              <span class="input-label padding">门店</span>
+              <input type="text" ng-model="employee.storeStr" ng-click="showStoreChoose()">
           </div>
       </div>
       <button class="button button-block button-calm" ng-click="confirm()">确认</button>

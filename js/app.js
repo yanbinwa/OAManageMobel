@@ -25,7 +25,7 @@ angular.module('ionicApp', ['ionic', 'ionicApp.controllers', 'ionicApp.services'
         }
       }
     })
-    .state('app.main.checkin', {
+   .state('app.main.checkin', {
       url: "/checkin",
       views: {
         'checkin-tab': {
@@ -43,18 +43,17 @@ angular.module('ionicApp', ['ionic', 'ionicApp.controllers', 'ionicApp.services'
         }
       }
     })
-    .state('login', {
-      url: "/login",
-      templateUrl: "templates/login.html",  
-      controller: 'LoginTabCtrl'
+    .state('employeeLogin', {
+      url: "/employeeLogin",
+      templateUrl: "templates/employeeLogin.html",  
+      controller: 'EmployeeLoginTabCtrl'
     })
-    .state('sign', {
-      url: "/sign",
-      templateUrl: "templates/sign.html", 
-      controller: 'SignTabCtrl'
-    });
-
+   .state('employeeSign', {
+     url: "/employeeSign",
+     templateUrl: "templates/employeeSign.html", 
+     controller: 'EmployeeSignTabCtrl'
+   });
   
-  $urlRouterProvider.otherwise("/login");
-
+  $urlRouterProvider.otherwise("/employeeLogin");
+  
 });

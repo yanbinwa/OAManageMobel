@@ -1,1 +1,11 @@
 /* Empty. Add your own CSS if you like */
+.modal.bottom-sheet{
+  bottom: 0;  
+  min-height: initial;
+  top: initial;
+  height: 50%;
+  border-width: 0px;
+  border-style: solid;
+  background-color:rgba(68, 68, 68, 0.92);
+  color:white !important;
+}

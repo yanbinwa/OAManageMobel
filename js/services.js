@@ -3,8 +3,8 @@ angular.module('ionicApp.services', [])
 .factory('WebsocketClient', function() {
 
 	//var SERVER_URL = "ws://localhost:8080/OAManage/websocket/websocketSpring";
-	//var SERVER_URL = "wss://192.168.1.104:8443/OAManage/websocket/websocketSpring";
-	var SERVER_URL = "ws://192.168.1.103:8080/OAManage/websocket/websocketSpring";
+	var SERVER_URL = "ws://10.140.8.37:8080/OAManage/websocket/websocketSpring";
+	//var SERVER_URL = "wss://192.168.1.103:8443/OAManage/websocket/websocketSpring";
 	var WEBSOCKET_ERROR = 400;
 	var RESPONSE_OK = 200;
 	var INVALIDATE_SESSIONID = -1;
@@ -112,6 +112,7 @@ angular.module('ionicApp.services', [])
 		address: '上海市徐汇区宜山路926号新思大楼',
 		tel: '13222085556'
 	};
+	
 	return {
 		getStoreInfo: function() {
 			return storeInfo;
@@ -129,6 +130,22 @@ angular.module('ionicApp.services', [])
 		removeStoreInfo: function(key) {
 			window.localStorage.removeItem(key + "storeInfo");
 		},
+	};
+})
+
+.factory('Store', function() {
+	
+	var storeTemplate = {
+		name: null,
+		address: null,
+		tel: null
+	};
+	
+	return {
+		getStoreTemplate: function() {
+			var newStore = JSON.parse(JSON.stringify(storeTemplate));
+			return newStore;
+		}
 	};
 })
 
@@ -175,8 +192,16 @@ angular.module('ionicApp.services', [])
 	};
 	
 	return {
-		getUserTemplate: function() {
+		getUserTemplate: function(userType) {
 			var newUser = JSON.parse(JSON.stringify(userTemplate));
+			if (userType == 'employee')
+			{
+				newUser.userType = 'employee';
+			}
+			else if (userType == 'store')
+			{
+				newUser.userType = 'store';
+			}
 			return newUser;
 		},
 		clearUser: function(user) {
@@ -199,6 +224,18 @@ angular.module('ionicApp.services', [])
 			var month = date.getUTCMonth();
 			var day = date.getDate();
 			return year + "/" + month + "/" + day;
+		},
+		getTimeStrFromTimestamp: function(timestamp) {
+			var date = new Date(timestamp);
+			var hour = date.getHours();
+			var minute = date.getMinutes();
+			var second = date.getSeconds();
+			return hour + ":" + minute + ":" + second;
+		},
+		getAgeFromBirthdayTimestamp: function(timestamp) {
+			var currentYear = new Date().getFullYear();
+			var brithdayYear = new Date(timestamp).getFullYear();
+			return currentYear - brithdayYear;
 		}
 	}
 })
@@ -227,29 +264,25 @@ angular.module('ionicApp.services', [])
 			if (notification.type != "UserSignVerify") {
 				return false;
 			}
-			if (notification.userObject == null) {
+			if (notification.user == null) {
 				return false;
 			}
-			if (notification.userObject.sex == null) {
+			if (notification.user.userType != 'Employee') {
 				return false;
 			}
-			else {
-				return true;
-			}
+			return true;
 		},
 		isStoreSignNotify: function(notification) {
 			if (notification.type != "UserSignVerify") {
 				return false;
 			}
-			if (notification.userObject == null) {
+			if (notification.user == null) {
 				return false;
 			}
-			if (notification.userObject.sex == null) {
-				return true;
-			}
-			else {
+			if (notification.user.userType != 'Store') {
 				return false;
 			}
+			return true;
 		}
 	}
 })
@@ -319,4 +352,76 @@ angular.module('ionicApp.services', [])
 		}
 	}
 
+})
+
+//通过url拿到对应的controller，也就是routingkey，这里注意login界面的重定向
+.factory('URL', function() {
+
+	var addEmployeeTabCtrlUrl = '/addEmployee';
+	var addEmployeeTabCtrl = 'AddEmployeeTabCtrl';
+	var checkinTabCtrlUrl = '/checkin';
+	var checkinTabCtrl = 'CheckinTabCtrl';
+	var listEmployeeTabCtrlUrl = '/listEmployee';
+	var listEmployeeTabCtrl = 'ListEmployeeTabCtrl';
+	
+	var signCtrlUrl = '/employeeSign';
+	var signCtrl = 'EmployeeSignTabCtrl';
+	var signStateName = 'employeeSign';
+	var loginCtrlUrl = '/employeeLogin';
+	var loginCtrl = 'EmployeeLoginTabCtrl';
+	var loginStateName = 'employeeLogin';
+	var userTabCtrlUrl = '/userEmployee';
+	var userTabCtrl = 'UserEmployeeTabCtrl';
+	var userStateName = 'app.main.userEmployee';
+	var userStateHref = '#/app/main/userEmployee';
+	
+	var homeTabCtrlUrl = '/home';
+	var homeTabCtrl = 'HomeTabCtrl';
+	var updateInfoTabCtrlUrl = '/updateInfo';
+	var updateInfoTabCtrl = 'UpdateInfoTabCtrl';
+	
+	return {
+		getCtrByUrl : function(url) {
+			var controller = loginCtrl;
+			switch(url) {
+			case addEmployeeTabCtrlUrl:
+				controller = addEmployeeTabCtrl;
+				break;
+			case checkinTabCtrlUrl:
+				controller = checkinTabCtrl;
+				break;
+			case signCtrlUrl:
+				controller = signCtrl;
+				break;
+			case loginCtrlUrl:
+				controller = loginCtrl;
+				break;
+			case homeTabCtrlUrl:
+				controller = homeTabCtrl;
+				break;
+			case updateInfoTabCtrlUrl:
+				controller = updateInfoTabCtrl;
+				break;
+			case userTabCtrlUrl:
+				controller = userTabCtrl;
+				break;
+			case listEmployeeTabCtrlUrl:
+				controller = listEmployeeTabCtrl;
+				break;
+			}
+			return controller;
+		},
+		getLoginStateName : function() {
+			return loginStateName;
+		},
+		getSignStateName : function() {
+			return signStateName;
+		},
+		getUserStateName : function() {
+			return userStateName;
+		},
+		getUserTabHref: function() {
+			return userStateHref;
+		}
+	}	
 });

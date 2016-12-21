@@ -1,9 +1,9 @@
 angular.module('ionicApp.controllers')
 
-.controller('UserEmployeeTabCtrl', function($scope, $state, $ionicPopup, WebsocketClient, UserInfo, DateUtil) {
+.controller('UserEmployeeTabCtrl', function($scope, $rootScope, $state, $ionicPopup, WebsocketClient, UserInfo, DateUtil, URL) {
 	
 	$scope.$watch('$viewContentLoaded', function(event) {
-
+		openTabResponse();
 	})
 	
 	$scope.$on("GeneralEvent", function(event, msg) {
@@ -13,10 +13,17 @@ angular.module('ionicApp.controllers')
 		}
 	});
 	
+	$scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+		var url = toState.url;
+		if (URL.getCtrByUrl(url) == 'UserEmployeeTabCtrl') {
+			openTabResponse();
+		}
+	})
+	
 	var onSessionConnectedResponse = function(msg) {
 		var stateAuth = msg.stateAuth;
 		if (!stateAuth) {
-			$state.go('login');
+			$state.go(URL.getLoginStateName());
 		}
 		else {
 			$scope.userInfo = UserInfo.getUserInfo();
@@ -35,8 +42,6 @@ angular.module('ionicApp.controllers')
 			logoutResponse(msg);
 		}
 	});
-	
-	$scope.userInfo = UserInfo.getUserInfo();
 	
 	$scope.showAuthType = function(authType) {
 		if (authType == "Normal") {
@@ -108,11 +113,11 @@ angular.module('ionicApp.controllers')
     	else {
     		alert("退出成功");
     	}
-    	$state.go('login');
+    	$state.go(URL.getLoginStateName());
 	}
 	
 	var openTabResponse = function() {
-		
+		$scope.userInfo = UserInfo.getUserInfo();
 	}
 	
 	var validatePassword = function(password) {

@@ -4,12 +4,12 @@
     <ion-nav-bar class="bar-positive">
       <ion-nav-buttons side="left">
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
-        <a class="button icon-right ion-home" href="#/app/main/home">Home</a>
       </ion-nav-buttons>
       
       <ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-home" href="#/app/main/home"></a>
         <a class="button button-icon icon ion-gear-a" href="#"></a>
-        <a class="button button-icon icon ion-person" href="#/app/main/userEmployee"></a>
+        <a class="button button-icon icon ion-person" href="{{getUserTabHref()}}"></a>
         <button class="button button-icon button-clear ion-paper-airplane" menu-toggle="right">
           <i ng-show="shouldShowInfoNum()">{{infoNum}}</i>
         </button>
@@ -17,6 +17,7 @@
     </ion-nav-bar>
 
     <ion-nav-view name="main"></ion-nav-view>
+    
   </ion-side-menu-content> 
 
   <ion-side-menu side="left">
@@ -26,20 +27,36 @@
     <ion-content>
       <ul class="list">
         <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
-        <a href="#/app/main/checkin" class="item" menu-close ng-click="openChildrenTab(1)">打卡</a>
+        <a href="#/app/main/checkin" class="item" menu-close>打卡</a>
       </ul>
     </ion-content>
   </ion-side-menu>
   
   <ion-side-menu side="right">
     <ion-header-bar class="bar-assertive">
-      <h1 class="title">消息</h1>
+      <div class="buttons">
+      <button class="button button-icon ion-checkmark" ng-click="confirmSelectedNotify()"></button>
+        <button class="button button-icon ion-trash-a" ng-click="clearSelectedNotify()"></button>
+    </div>
+    <h1 class="title">消息</h1>
+    <div class="buttons">
+      <div class="checkbox checkbox-circle">
+         <input type="checkbox" ng-model="checkBoxContext.isSelected" ng-click="selectedAllNotify()">
+      </div>
+    </div>
     </ion-header-bar>
     <ion-content>
-      <ul class="list">
-        <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
-        
-      </ul>
+      <ion-list>
+        <ion-item display="flex" ng-repeat="notification in notifications" type="item-text-wrap">
+            <div class="block" ng-click="verifyNotify(notification)">
+              <span class="input-label">{{getNotifyTitle(notification)}}</span>
+              <i>{{notification.user.name}}</i>
+            </div>
+            <div class="checkbox checkbox-circle">
+             <input type="checkbox" ng-model="notification.isSelected">
+          </div>
+        </ion-item>
+      </ion-list>
     </ion-content>
   </ion-side-menu>
 

@@ -26,7 +26,8 @@ angular.module('ionicApp.controllers')
 					responseCode : WebsocketClient.getWebSocketError(),
 					responsePayLoad : null
 				};
-				handleManage(responseMsg);
+        event.data = JSON.stringify(responseMsg);
+				handleManage(event);
 			}
 		}
 	})

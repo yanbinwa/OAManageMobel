@@ -1,10 +1,7 @@
 <ion-view view-title="打卡">
   <ion-content class="padding">
-    <label class="item-input-wrapper">
-      <input type="text" placeholder="请扫描二维码" ng-model="barcode">
-    </label>
     <button class="button button-block button-calm" ng-click="scanBarcode()">
-      扫描二维码
+      {{getCheckinButtonName()}}
     </button>
   </ion-content>
 </ion-view>

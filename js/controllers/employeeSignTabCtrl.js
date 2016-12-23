@@ -113,7 +113,7 @@ angular.module('ionicApp.controllers')
             alert("请输入出生日期");
             return false;
         }
-        employee.age = getAgeFromBirthdayTimestamp(employee.birthday);
+        employee.age = DateUtil.getAgeFromBirthdayTimestamp(employee.birthday);
         if(employee.sex == null || employee.sex == '')
         {
             alert("请输入性别"); 
@@ -314,6 +314,44 @@ angular.module('ionicApp.controllers')
         $scope.location.store = {};
         $rootScope.$digest();
     }
+
+    $scope.showStoreChoose = function() {
+        $scope.storeChooseModal.show();
+    }
+
+    $scope.cancelStoreChoose = function() {
+        $scope.storeChooseModal.hide();
+    }
+
+    $scope.confirmStoreChoose = function() {
+        $scope.employee.storeStr = '';
+        if ($scope.location.province.name != null) {
+            $scope.employee.storeStr += $scope.location.province.name + '  ';
+        }
+        if ($scope.location.city.name != null) {
+            $scope.employee.storeStr += $scope.location.city.name + '  ';
+        }
+        if ($scope.location.area.name != null) {
+            $scope.employee.storeStr += $scope.location.area.name + '  ';
+        }
+        if ($scope.location.store.name != null) {
+            $scope.employee.storeStr += $scope.location.store.name;
+        }
+        $scope.location.province = {};
+        $scope.location.city = {};
+        $scope.location.area = {};
+        $scope.storeId = $scope.location.store.id;
+        $scope.location.store = {};
+        $scope.storeChooseModal.hide();
+    }
+
+    $ionicModal.fromTemplateUrl('templates/storeChoose.html', function(modal) {
+        $scope.storeChooseModal = modal;
+    }, {
+        scope: $scope,
+        viewType: 'bottom-sheet',
+        animation: 'slide-in-up'
+    });
     
     /* -------------- ----------------- */
     
@@ -348,43 +386,6 @@ angular.module('ionicApp.controllers')
     /* -------------- ----------------- */
     
     /* -------------- choose store ----------------- */
-
-    $scope.showStoreChoose = function() {
-        $scope.storeChooseModal.show();
-    }
-
-    $scope.cancelStoreChoose = function() {
-        $scope.storeChooseModal.hide();
-    }
-
-    $scope.confirmStoreChoose = function() {
-        $scope.employee.storeStr = '';
-        if ($scope.location.province.name != null) {
-            $scope.employee.storeStr += $scope.location.province.name + '  ';
-        }
-        if ($scope.location.city.name != null) {
-            $scope.employee.storeStr += $scope.location.city.name + '  ';
-        }
-        if ($scope.location.area.name != null) {
-            $scope.employee.storeStr += $scope.location.area.name + '  ';
-        }
-        if ($scope.location.store.name != null) {
-            $scope.employee.storeStr += $scope.location.store.name;
-        }
-        $scope.location.province = {};
-        $scope.location.city = {};
-        $scope.location.area = {};
-        $scope.location.store = {};
-        $scope.storeChooseModal.hide();
-    }
-
-    $ionicModal.fromTemplateUrl('templates/storeChoose.html', function(modal) {
-        $scope.storeChooseModal = modal;
-    }, {
-        scope: $scope,
-        viewType: 'bottom-sheet',
-        animation: 'slide-in-up'
-    });
 
     /* -------------- ----------------- */
 

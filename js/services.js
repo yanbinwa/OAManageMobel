@@ -3,7 +3,7 @@ angular.module('ionicApp.services', [])
 .factory('WebsocketClient', function() {
 
 	//var SERVER_URL = "ws://localhost:8080/OAManage/websocket/websocketSpring";
-	var SERVER_URL = "ws://10.140.8.37:8080/OAManage/websocket/websocketSpring";
+	var SERVER_URL = "ws://10.140.8.24:8080/OAManage/websocket/websocketSpring";
 	//var SERVER_URL = "wss://192.168.1.103:8443/OAManage/websocket/websocketSpring";
 	var WEBSOCKET_ERROR = 400;
 	var RESPONSE_OK = 200;
@@ -62,6 +62,7 @@ angular.module('ionicApp.services', [])
 		},
 		sessionOnClose: function() {
 			session.connected = false;
+			session.connecting = false;
 			session.client = null;
 		},
 		isReconnecting: function() {
@@ -227,6 +228,13 @@ angular.module('ionicApp.services', [])
 		},
 		getTimeStrFromTimestamp: function(timestamp) {
 			var date = new Date(timestamp);
+			var hour = date.getHours();
+			var minute = date.getMinutes();
+			var second = date.getSeconds();
+			return hour + ":" + minute + ":" + second;
+		},
+		getCurrentTimeStr: function() {
+			var date = new Date();
 			var hour = date.getHours();
 			var minute = date.getMinutes();
 			var second = date.getSeconds();
